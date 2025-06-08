@@ -26,26 +26,25 @@ if uploaded_file:
         image.save(buffered, format="PNG")
         img_str = base64.b64encode(buffered.getvalue()).decode()
 
-        response = openai.chat.completions.create(
-            model="gpt-4-vision-preview",
-            messages=[
-                {"role": "system", "content": "You are a professional forex trading assistant."},
+       response = openai.chat.completions.create(
+    model="gpt-4-vision-preview",
+    messages=[
+        {"role": "system", "content": "You are a professional forex trading assistant."},
+        {
+            "role": "user",
+            "content": [
                 {
-                    "role": "user",
-                    "content": [
-                        {"type": "text", "text": "Analyze this forex chart screenshot and extract:
-- Pair
-- Timeframe
-- Signal (Buy/Sell)
-- Reason
-- Caution"},
-                        {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{img_str}"}}
-                    ]
+                    "type": "text",
+                    "text": "Analyze this forex chart screenshot and extract:\\n- Pair\\n- Timeframe\\n- Signal (Buy/Sell)\\n- Reason\\n- Caution"
+                },
+                {
+                    "type": "image_url",
+                    "image_url": {
+                        "url": f"data:image/png;base64,{img_str}"
+                    }
                 }
-            ],
-            max_tokens=500
-        )
-
-        result = response.choices[0].message.content
-        st.markdown("### 🧾 Analysis Result")
-        st.markdown(result)
+            ]
+        }
+    ],
+    max_tokens=500
+)
